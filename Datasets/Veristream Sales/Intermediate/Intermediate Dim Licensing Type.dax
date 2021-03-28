@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Dim Account',
+        "Licensing Type", [Licensing Type]
+    )
+)

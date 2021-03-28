@@ -1,0 +1,23 @@
+GROUPBY(
+    'Intermediate Opportunity', 
+    [Opportunity Id],
+    "Account Id", MAXX(CURRENTGROUP(), [Account Id]), 
+    "Account Name", MAXX(CURRENTGROUP(), [Account Name]),
+    "Close Date", MAXX(CURRENTGROUP(), [Close Date]),
+    "Create Date", MAXX(CURRENTGROUP(), [Create Date]),
+    "Close Month", MAXX(CURRENTGROUP(), [Close Month]),
+    "Start Month", MAXX(CURRENTGROUP(), [Start Month]),
+    "Opportunity", MAXX(CURRENTGROUP(), [Opportunity]),
+    "Owner", MAXX(CURRENTGROUP(), [Owner]),
+    "Account URL", MAXX(CURRENTGROUP(), [Account URL]),
+    "Sales Type", MAXX(CURRENTGROUP(), [Sales Type]),
+    "Probability", MAXX(CURRENTGROUP(), [Probability]),
+    "Opportunity Type", MAXX(CURRENTGROUP(), [Opportunity Type]),
+    "Winning Competitor", MAXX(CURRENTGROUP(), [Winning Competitor]),
+    "Stage", MAXX(CURRENTGROUP(), [Stage]),
+    "Confidence of Closing On Time", MAXX(CURRENTGROUP(), [Confidence of Closing On Time]),
+    "Revenue Total", SUMX(CURRENTGROUP(), [Revenue Total]),
+    "New MRR", SUMX(CURRENTGROUP(), [New MRR]),
+    "Renewal MRR", SUMX(CURRENTGROUP(), [Renewal MRR]),
+    "Number of Months", MAXX(CURRENTGROUP(), [Number of Months])
+)

@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Opportunity',
+        "Confidence of Closing On Time", [Confidence of Closing On Time]
+    )
+)

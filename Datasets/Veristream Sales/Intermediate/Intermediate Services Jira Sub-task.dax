@@ -1,0 +1,57 @@
+
+var _records = SELECTCOLUMNS(
+    NATURALINNERJOIN(
+        'Staging Services Jira Sub-task',
+        'Staging Services Jira Task Sub-task'
+    ),
+    "Assignee", [Assignee],
+    "Created By", [Created By],
+    "Created Time", [Created Time],
+    "Customer", [Customer],
+    "Issue Type", [Issue Type],
+    "Priority", [Priority],
+    "Product", [Product],
+    "Project Key", [Project Key],
+    "Project Name", [Project Name],
+    "Resolution", [Resolution],
+    "Resolution Time", [Resolution Time],
+    "Task Status", [Status],
+    "Status Change Time", [Status Change Time],
+    "Sub-task Key", 'Staging Services Jira Sub-task'[Sub-task Key],
+    "Sub-task Name", [Sub-task Name],
+    "Task Key", [Task Key],
+    "Updated Time", [Updated Time]
+)
+
+var _tasks_without_subtasks = FILTER(
+    'Staging Services Jira Task',
+    CALCULATE(
+        COUNTROWS('Staging Services Jira Task Sub-task')
+    ) = 0
+)
+
+var _no_sub_tasks = SELECTCOLUMNS(
+    _tasks_without_subtasks,
+    "Assignee", BLANK(),
+    "Created By", BLANK(),
+    "Created Time", BLANK(),
+    "Customer", BLANK(),
+    "Issue Type", BLANK(),
+    "Priority", BLANK(),
+    "Product", BLANK(),
+    "Project Key", [Project Key],
+    "Project Name", [Project Name],
+    "Resolution", BLANK(),
+    "Resolution Time", BLANK(),
+    "Task Status", BLANK(),
+    "Status Change Time", BLANK(),
+    "Sub-task Key", [Task Key],
+    "Sub-task Name", "No Sub-tasks",
+    "Task Key", [Task Key],
+    "Updated Time", BLANK()
+)
+
+return UNION(
+    _records,
+    _no_sub_tasks
+)

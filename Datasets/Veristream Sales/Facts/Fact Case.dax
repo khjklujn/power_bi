@@ -1,0 +1,41 @@
+
+var _records = NATURALINNERJOIN(
+    NATURALLEFTOUTERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Account Renewal'
+    ),
+    'Intermediate Case'
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "30-60-90 Day Window", [30-60-90 Day Window],
+    "Account Id", 'Intermediate Case'[Account Id],
+    "Account Name", 'Intermediate Case'[Account Name],
+    "Account Owner", 'Intermediate Dim Account'[Owner],
+    "Account URL", 'Intermediate Case'[Account URL],
+    "Age Category", [Age Category],
+    "Case Category", [Case Category],
+    "Case Id", [Case Id],
+    "Case Status", [Case Status],
+    "Case Sub Category", [Case Sub Category],
+    "Cases", [Cases],
+    "Open Cases", IF(
+        [Case Status] = "Open", 1,
+        BLANK()
+    ),
+    "Days Open", [Days Open],
+    "Open Date", [Open Date],
+    "Open Month", [Open Month],
+    "Owner", 'Intermediate Case'[Owner],
+    "Case Priority", IF(
+        [Priority] = BLANK(), "Unknown",
+        [Priority]
+    ),
+    "Product", IF(
+        [Product] = BLANK(), "Unknown",
+        [Product]
+    ),
+    "Renewing Within 90 Days", DATEDIFF(TODAY(), 'Intermediate Account Renewal'[Renewal Month], DAY) <= 90,
+    "Subject", [Subject]
+)

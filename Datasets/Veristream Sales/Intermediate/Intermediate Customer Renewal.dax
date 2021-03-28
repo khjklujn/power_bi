@@ -1,0 +1,88 @@
+
+var _renewables = FILTER(
+    NATURALINNERJOIN(
+        'Staging Opportunity',
+        NATURALINNERJOIN(
+            'Staging Opportunity Product',
+            'Staging Product'
+        )
+    ),
+    AND(
+        'Staging Opportunity'[StageName] = "Closed Won",
+        'Staging Product'[Subscription__c]
+    )
+)
+
+var _customers = NATURALINNERJOIN(
+    'Staging Customer',
+    'Staging Account'
+)
+
+var _won = SELECTCOLUMNS(
+    NATURALINNERJOIN(
+        _customers,
+        _renewables
+    ),
+    "Customer Id", 'Staging Customer'[SaasOptics ID],
+    "Close Month", 'Staging Opportunity'[Start Month],
+    "Renewal Month", IF(
+        AND(
+            MONTH([Start Month]) = 2,
+            DAY([Start Month]) = 29
+        ), DATE(
+            YEAR([Start Month]) + IF(
+                CONTAINSSTRING('Staging Product'[Name], "3 Year"), 3,
+                IF(
+                    CONTAINSSTRING('Staging Product'[Name], "2 Year"), 2,
+                    1
+                )
+             ),
+            2, 
+            28),
+        DATE(
+            YEAR([Start Month]) + IF(
+                CONTAINSSTRING('Staging Product'[Name], "3 Year"), 3,
+                IF(
+                    CONTAINSSTRING('Staging Product'[Name], "2 Year"), 2,
+                    1
+                )
+             ),
+            MONTH([Start Month]),
+            DAY([Start Month])
+        )
+    )
+)
+
+var _renewals = GROUPBY(
+    _won,
+    [Customer Id],
+    "Close Month", MAXX(CURRENTGROUP(), [Close Month]),
+    "Renewal Month", MAXX(CURRENTGROUP(), [Renewal Month])
+)
+
+var _return = SELECTCOLUMNS(
+    _renewals,
+    "Customer Id", [Customer Id],
+    "Close Month", [Close Month],
+    "Renewal Month", [Renewal Month],
+    "Days To Renewal", IF(
+        DATEDIFF(
+            TODAY(),
+            [Renewal Month],
+            DAY
+        ) <= 0, 0,
+        DATEDIFF(
+            TODAY(),
+            [Renewal Month],
+            DAY
+        )
+    )
+)
+
+return SELECTCOLUMNS(
+    _return,
+    "Customer Id", [Customer Id],
+    "Close Month", [Close Month],
+    "Renewal Month", [Renewal Month],
+    "Days To Renewal", [Days To Renewal]
+)

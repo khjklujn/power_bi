@@ -1,0 +1,5 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Goal Owner',
+    "Goal Owner", [Goal Owner],
+    "Sales Region", [Sales Region]
+)

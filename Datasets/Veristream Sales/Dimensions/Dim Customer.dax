@@ -1,0 +1,8 @@
+UNION(
+    SELECTCOLUMNS(
+        'Intermediate Dim Customer',
+        "Customer Id", [Customer Id],
+        "Customer", [Customer]
+    ),
+    ROW("Customer Id", "NEW SALES", "Customer", "NEW SALES")
+)

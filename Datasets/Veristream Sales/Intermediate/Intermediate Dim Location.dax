@@ -1,0 +1,44 @@
+
+var _records = DISTINCT(
+    SELECTCOLUMNS(
+        'Staging Location',
+        "Address", [Address],
+        "Location", [Name],
+        "Location Id", [Id],
+        "Maintenance Stage", [Maintenance_Stage__c],
+        "Product", [Product__c],
+        "Unique Name", [Unique Name]
+    )
+)
+
+var _potential_duplicates = SELECTCOLUMNS(
+    'Staging Account',
+    "Account", [Name],
+    "Count", COUNTX(
+        FILTER(
+            'Staging Account', 
+            EARLIER('Staging Account'[Name]) = 'Staging Account'[Name]
+        ),
+        'Staging Account'[Name]
+    )
+)
+
+var _duplicates = SELECTCOLUMNS(
+    FILTER(
+        _potential_duplicates,
+        [Count] > 1
+    ),
+    "Account", [Account]
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Address", [Address],
+    "Location", IF(
+        [Location] IN _duplicates, [Unique Name],
+        [Location]
+    ),
+    "Location Id", [Location Id],
+    "Maintenance Stage", [Maintenance Stage],
+    "Product", [Product]
+)

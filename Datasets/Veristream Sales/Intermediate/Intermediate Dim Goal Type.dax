@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Opportunity', 
+        "Goal Type", [Goal Type]
+    )
+)

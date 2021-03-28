@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Staging Product', 
+        "SKU", 'Staging Product'[Name]
+    )
+)

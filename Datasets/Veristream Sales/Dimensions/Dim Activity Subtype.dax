@@ -1,0 +1,9 @@
+DISTINCT(
+    FILTER(
+        SELECTCOLUMNS(
+            'Intermediate Task',
+            "Activity Subtype", [Activity Subtype]
+        ),
+        NOT([Activity Subtype] = BLANK())
+    )
+)

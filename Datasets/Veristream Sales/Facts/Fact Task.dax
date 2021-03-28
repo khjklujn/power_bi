@@ -1,0 +1,20 @@
+SELECTCOLUMNS(
+     'Intermediate Task',
+    "30-60-90 Day Window", [30-60-90 Day Window],
+    "30 Day Sales Activities", [30 Day Sales Activities],
+    "60 Day Sales Activities", [60 Day Sales Activities],
+    "90 Day Sales Activities", [90 Day Sales Activities],
+    "Account Id", [Account Id],
+    "Account Name", [Account Name],
+    "Account Owner", [Account Owner],
+    "Account URL", [Account URL],
+    "Activity Date", [Activity Date],
+    "Activity Id", [Activity Id],
+    "Activity Month", [Activity Month],
+    "Activity Status", [Activity Status],
+    "Activity Subtype", [Activity Subtype],
+    "Activity Type", [Activity Type],
+    "Opportunity Id", [Opportunity Id],
+    "Owner", 'Intermediate Task'[Owner],
+    "Subject", [Subject]
+)

@@ -1,0 +1,47 @@
+
+var _records = SELECTCOLUMNS(
+    'Staging Services Jira Epic',
+    "Assignee", [Assignee],
+    "Created By", [Created By],
+    "Created Time", [Created Time],
+    "Customer", [Customer],
+    "Due Date", [Due Date],
+    "Epic Key", [Epic Key],
+    "Epic Name", [Epic Name],
+    "Issue Type", [Issue Type],
+    "Priority", [Priority],
+    "Product", [Product],
+    "Project Key", [Project Key],
+    "Project Name", [Project Name],
+    "Resolution", [Resolution],
+    "Resolution Time", [Resultion Time],
+    "Status", [Status],
+    "Status Change Time", [Status Change Time],
+    "Update Time", [Update Time]
+)
+
+var _no_epic = GROUPBY(
+    'Staging Services Jira Epic',
+    [Project Key],
+    [Project Name],
+    "Assignee", MAXX(CURRENTGROUP(), BLANK()),
+    "Created By", MAXX(CURRENTGROUP(), BLANK()),
+    "Created Time", MAXX(CURRENTGROUP(), BLANK()),
+    "Customer", MAXX(CURRENTGROUP(), BLANK()),
+    "Due Date",MAXX(CURRENTGROUP(),  BLANK()),
+    "Epic Key", MAXX(CURRENTGROUP(), "No Epic"),
+    "Epic Name", MAXX(CURRENTGROUP(), "No Epic"),
+    "Issue Type", MAXX(CURRENTGROUP(), BLANK()),
+    "Priority", MAXX(CURRENTGROUP(), BLANK()),
+    "Product", MAXX(CURRENTGROUP(), BLANK()),
+    "Resolution", MAXX(CURRENTGROUP(), BLANK()),
+    "Resolution Time", MAXX(CURRENTGROUP(), BLANK()),
+    "Status", MAXX(CURRENTGROUP(), BLANK()),
+    "Status Change Time", MAXX(CURRENTGROUP(), BLANK()),
+    "Update Time", MAXX(CURRENTGROUP(), BLANK())
+)
+
+return UNION(
+    _records,
+    _no_epic
+)

@@ -1,0 +1,191 @@
+
+var _table = NATURALINNERJOIN(
+    'Staging Opportunity Owner',
+    NATURALINNERJOIN(
+        NATURALINNERJOIN(
+            'Staging Account',
+            'Staging Account Owner'
+        ),
+        NATURALINNERJOIN(
+            'Staging Opportunity', 
+            NATURALINNERJOIN(
+                'Staging Opportunity Product',
+                'Staging Product'
+            )
+        )
+    )
+)
+
+var _potential_duplicates = SELECTCOLUMNS(
+    'Staging Opportunity',
+    "Opportunity", [Name],
+    "Count", COUNTX(
+        FILTER(
+            'Staging Opportunity', 
+            EARLIER('Staging Opportunity'[Name]) = 'Staging Opportunity'[Name]
+        ),
+        'Staging Opportunity'[Name]
+    )
+)
+
+var _duplicates = SELECTCOLUMNS(
+    FILTER(
+        _potential_duplicates,
+        [Count] > 1
+    ),
+    "Opportunity", [Opportunity]
+)
+
+return SELECTCOLUMNS(
+    _table, 
+    "Account Id", 'Staging Opportunity'[AccountId], 
+    "Account Name", 'Staging Account'[Name],
+    "Opportunity Id", 'Staging Opportunity'[Id],
+    "Close Date", 'Staging Opportunity'[CloseDate],
+    "Create Date", 'Staging Opportunity'[CreatedDate],
+    "Close Month", 'Staging Opportunity'[Close Month],
+    "Start Month", 'Staging Opportunity'[Start Month],
+    "Opportunity", IF(
+        'Staging Opportunity'[Name] IN _duplicates, 'Staging Opportunity'[Unique Name],
+        'Staging Opportunity'[Name]
+    ),
+    "Owner", IF(
+        'Staging Opportunity'[Type] = "Renewal", 'Staging Account Owner'[Name],
+        'Staging Opportunity Owner'[Name]
+    ),
+    "Account URL", 'Staging Account'[URL],
+    "Sales Type", IF(
+        'Staging Opportunity'[Type] = "Upsell", "Upsell",
+        IF(
+            'Staging Opportunity Product'[Product_Family__c] IN {"Hardware", "Supplies", "Setup"}, "New",
+            IF(
+                'Staging Opportunity'[Type] = "Renewal", "Renewal",
+                "New"
+            )
+        )
+    ),
+    "SKU", 'Staging Product'[Name],
+    "Probability", 'Staging Opportunity'[Probability] / 100.0,
+    "Opportunity Type", 'Staging Opportunity'[Type],
+    "Winning Competitor", 'Staging Opportunity'[Winning_Competitor__c],
+    "Goal Type", IF(
+        'Staging Opportunity'[Type] = "Renewal", IF(
+            'Staging Opportunity Product'[Product_Family__c] = "Hardware", "Products",
+            IF(
+                'Staging Opportunity Product'[Product_Family__c] = "Supplies", "Hosted Supplies",
+                IF(
+                    'Staging Opportunity Product'[Product_Family__c] = "Setup", "Professional Services",
+                    IF(
+                        'Staging Opportunity Product'[Product_Family__c] = "Professional Services", IF(
+                            'Staging Opportunity Product'[Annual_Subscription__c], "Renewal Professional Services",
+                            "Professional Services"
+                        ),
+                        IF(
+                            'Staging Opportunity Product'[Product_Family__c] IN {"SaaS", "SaaS-Uplift", "Core"}, "Renewal ARR",
+                            "Shipping and Taxes"
+                        )
+                    )
+                )
+            )
+        ),
+        IF(
+            'Staging Opportunity Product'[Product_Family__c] = "Hardware", "Products",
+            IF(
+                'Staging Opportunity Product'[Product_Family__c] = "Supplies", "Hosted Supplies",
+                IF(
+                    'Staging Opportunity Product'[Product_Family__c] = "Setup", "Professional Services",
+                    IF(
+                        'Staging Opportunity Product'[Product_Family__c] = "Professional Services", IF(
+                            'Staging Opportunity Product'[Annual_Subscription__c], IF(
+                                CONTAINSSTRING('Staging Account'[Industry], "Reseller"), "Channel ARR",
+                                "New ARR"
+                            ),
+                            "Professional Services"
+                        ),
+                        IF(
+                            'Staging Opportunity Product'[Product_Family__c] IN {"SaaS", "SaaS-Uplift", "Core"}, IF(
+                                CONTAINSSTRING('Staging Account'[Industry], "Reseller"), "Channel ARR",
+                                "New ARR"
+                            ),
+                            "Shipping and Taxes"
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    "Stage", IF(
+        [StageName] = "Closed Lost", "Closed Lost",
+        IF(
+            [StageName] = "Closed Won", "Closed Won",
+            IF(
+                [StageName] = "In Procurement", "90 In Procurement",
+                IF(
+                    [StageName] = "Selected", "80 Selected",
+                    IF(
+                        [StageName] = "Trial", "70 Trial",
+                        IF(
+                            [StageName] = "Negotiation", "60 Negotiation",
+                            IF(
+                                [StageName] = "Final Proposal Presented", "50 Final Proposal Presented",
+                                IF(
+                                    [StageName] = "Committee Demo Complete", "40 Committee Demo Complete",
+                                    IF(
+                                        [StageName] = "Proposal Presentation Complete", "30 Proposal Presentation Complete",
+                                        IF(
+                                            [StageName] = "1st Demo Completed", "20 1st Demo Completed",
+                                            IF(
+                                                [StageName] = "Demo Scheduled", "10 Demo Scheduled",
+                                                "05 Nurture"
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    "Confidence of Closing On Time", IF(
+        DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) < 0, "Past Due",
+        IF(
+            'Staging Opportunity'[Probability] >= 80, "High",
+            IF(
+                AND(
+                    DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) <= 30,
+                    'Staging Opportunity'[Probability] >= 50
+                ), "Medium",
+                IF(
+                    DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) <= 30, "Low",
+                    IF(
+                        AND(
+                            DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) <= 68,
+                            'Staging Opportunity'[Probability] >= 50
+                        ), "High",
+                        IF(
+                            AND(
+                                DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) <= 68,
+                                'Staging Opportunity'[Probability] >= 30
+                            ), "Medium",
+                            IF(
+                                AND(
+                                    DATEDIFF(TODAY(), 'Staging Opportunity'[Close Month], DAY) <= 68,
+                                    'Staging Opportunity'[Probability] < 30
+                                ), "Low",
+                                "High"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    "Revenue Total", 'Staging Opportunity Product'[TotalPrice],
+    "Recurring", 'Staging Opportunity Product'[Annual_Subscription__c],
+    "New MRR", 'Staging Opportunity Product'[UnitPrice],
+    "Renewal MRR", 'Staging Opportunity Product'[UnitPrice],
+    "Number of Months", 'Staging Opportunity Product'[Quantity] / 'Staging Opportunity Product'[Locations__c],
+    "Number of Locations", 'Staging Opportunity Product'[Locations__c]
+)

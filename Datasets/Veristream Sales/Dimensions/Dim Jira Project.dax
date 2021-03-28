@@ -1,0 +1,5 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Jira Project',
+    "Project Key", [Project Key],
+    "Project Name", [Project Name]
+)

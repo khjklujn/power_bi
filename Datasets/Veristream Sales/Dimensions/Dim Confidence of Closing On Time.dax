@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Confidence of Closing On Time',
+    "Confidence of Closing On Time", [Confidence of Closing On Time]
+)

@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Dim Account',
+        "Customer Type", [Customer Type]
+    )
+)

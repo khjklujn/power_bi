@@ -1,0 +1,7 @@
+UNION(
+    SELECTCOLUMNS('Staging Goals', "Close Month", [Close Month], "Owner", [Owner], "Sales Region", [Sales Region], "Goal Type", "New ARR", "Monthly", [Direct Licensing], "Goal", [Direct Licensing]),
+    SELECTCOLUMNS('Staging Goals', "Close Month", [Close Month], "Owner", [Owner], "Sales Region", [Sales Region], "Goal Type", "Channel ARR", "Monthly", [Channel Licensing], "Goal", [Channel Licensing]),
+    SELECTCOLUMNS('Staging Goals', "Close Month", [Close Month], "Owner", [Owner], "Sales Region", [Sales Region], "Goal Type", "Products", "Monthly", [Products], "Goal", [Products]),
+    SELECTCOLUMNS('Staging Goals', "Close Month", [Close Month], "Owner", [Owner], "Sales Region", [Sales Region], "Goal Type", "Hosted Supplies", "Monthly", [Hosted Supplies], "Goal", [Hosted Supplies]),
+    SELECTCOLUMNS('Staging Goals', "Close Month", [Close Month], "Owner", [Owner], "Sales Region", [Sales Region], "Goal Type", "Professional Services", "Monthly", [Professional Services], "Goal", [Professional Services] )
+)

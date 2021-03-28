@@ -1,0 +1,7 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Product',
+    "Product", IF(
+        [Product] = BLANK(), "Unknown",
+        [Product]
+    )
+)

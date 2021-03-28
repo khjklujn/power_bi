@@ -1,0 +1,3 @@
+DISTINCT(
+    SELECTCOLUMNS('Staging Services Jira Epic', "Epic Key", [Epic Key], "Epic Name", [Epic Name])
+)

@@ -1,0 +1,22 @@
+
+var _records = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "Closed Won", "05 Nurture"}),
+        DATEDIFF(TODAY(), [Close Date], DAY) <= 0
+    )
+)
+
+return GROUPBY(
+    _records,
+    [Account],
+    [Close Date],
+    [Opportunity],
+    [Opportunity Type],
+    'Intermediate Opportunity'[Owner],
+    'Intermediate Dim Account'[URL],
+    "Revenue", SUMX(CURRENTGROUP(), [Revenue Total])
+)

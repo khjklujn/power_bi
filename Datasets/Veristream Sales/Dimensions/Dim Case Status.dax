@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Case Status',
+    "Case Status", [Case Status]
+)

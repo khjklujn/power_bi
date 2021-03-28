@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Case',
+        "Age Category", [Age Category]
+    )
+)

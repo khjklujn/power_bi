@@ -1,0 +1,14 @@
+SELECTCOLUMNS(
+   'Intermediate Dim Account',
+    "Account Id", [Account Id], 
+    "Account", [Account],
+    "Owner", [Owner],
+    "Customer Type", [Customer Type], 
+    "Licensing Type", [Licensing Type],
+    "Customer Id", IF(
+        [Customer Id] = BLANK(), "NEW SALES",
+        [Customer Id]
+    ),
+    "URL", [URL],
+    "URL Name", [URL Name]
+)

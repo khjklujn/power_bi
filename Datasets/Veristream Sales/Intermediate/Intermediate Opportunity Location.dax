@@ -1,0 +1,10 @@
+SELECTCOLUMNS(
+    'Staging Location',
+    "Opportunity Id", 'Staging Location'[Opportunity__c],
+    "Location", 'Staging Location'[Name],
+    "Location Id", 'Staging Location'[Id],
+    "Address", 'Staging Location'[Address],
+    "Maintenance Stage", 'Staging Location'[Maintenance_Stage__c],
+    "Maintenance Status", 'Staging Location'[Maintenance_Status__c],
+    "Product", 'Staging Location'[Product__c]
+)

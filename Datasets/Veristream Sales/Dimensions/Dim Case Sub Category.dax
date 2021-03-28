@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Case Sub Category',
+    "Case Sub Category", [Case Sub Category]
+)

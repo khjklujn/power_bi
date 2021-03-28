@@ -1,0 +1,9 @@
+DISTINCT(
+    FILTER(
+        SELECTCOLUMNS(
+            'Intermediate Task',
+            "Activity Status", [Activity Status]
+        ),
+        NOT([Activity Status] = BLANK())
+    )
+)

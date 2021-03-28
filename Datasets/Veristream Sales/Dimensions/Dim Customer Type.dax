@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Customer Type',
+    "Customer Type", [Customer Type]
+)

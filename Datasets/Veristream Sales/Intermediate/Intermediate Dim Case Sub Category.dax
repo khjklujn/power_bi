@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Case',
+        "Case Sub Category", [Case Sub Category]
+    )
+)

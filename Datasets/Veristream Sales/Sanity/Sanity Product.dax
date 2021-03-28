@@ -1,0 +1,53 @@
+
+var _new_product_in_renewal = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        AND(
+            NOT([Stage] = "05 Nurture"),
+            [Close Date] >= DATE(2020, 1, 1)
+        ),
+        AND(
+            [Opportunity Type] = "Renewal",
+            AND(
+                [Goal Type] = "Renewal ARR",
+                NOT(
+                    OR(
+                        CONTAINSSTRING([SKU], "Watch List"),
+                        OR(
+                            CONTAINSSTRING([SKU], "Renewal"),
+                            CONTAINSSTRING([SKU], "Recurring")
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+var _renewal_product_in_new = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        AND(
+            NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+            [Close Date] >= DATE(2020, 1, 1)
+        ),
+        AND(
+            NOT([Opportunity Type] = "Renewal"),
+            AND(
+                [Goal Type] IN {"New ARR", "Channel ARR"},
+                CONTAINSSTRING([SKU], "Renewal")
+            )
+        )
+    )
+)
+
+return UNION(
+    SELECTCOLUMNS(_new_product_in_renewal, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "Problem", "New Product in Renewal Opportunity", "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_renewal_product_in_new, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "Problem", "Renewal Product in New Opportunity", "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL])
+)

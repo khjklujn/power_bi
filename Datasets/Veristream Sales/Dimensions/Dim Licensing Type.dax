@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Licensing Type',
+    "Licensing Type", [Licensing Type]
+)

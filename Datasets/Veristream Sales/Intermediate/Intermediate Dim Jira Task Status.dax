@@ -1,0 +1,7 @@
+DISTINCT(
+    UNION(
+        SELECTCOLUMNS('Staging Services Jira Epic', "Task Status Name", [Status]),
+        SELECTCOLUMNS('Staging Services Jira Task', "Task Status Name", [Status]),
+        SELECTCOLUMNS('Staging Services Jira Sub-task', "Task Status Name", [Status])
+    )
+)

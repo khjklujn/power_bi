@@ -1,0 +1,121 @@
+
+var _renewal_professional_services_is_zero = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+        AND(
+            AND(
+                [Opportunity Type] = "Renewal",
+                [Close Date] >= DATE(2020, 1, 1)
+            ),
+            AND(
+                [Goal Type] = "Renewal Professional Services",
+                OR(
+                    [Renewal MRR] = BLANK(),
+                    [Renewal MRR] = 0
+                )
+            )
+        )
+    )
+)
+
+var _renewal_arr_is_zero = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+        AND(
+            AND(
+                [Opportunity Type] = "Renewal",
+                [Close Date] >= DATE(2020, 1, 1)
+            ),
+            AND(
+                [Goal Type] = "Renewal ARR",
+                OR(
+                    [Renewal MRR] = BLANK(),
+                    [Renewal MRR] = 0
+                )
+            )
+        )
+    )
+)
+
+var _renewal_mrr_too_high = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+        AND(
+            AND(
+                [Opportunity Type] = "Renewal",
+                [Close Date] >= DATE(2020, 1, 1)
+            ),
+            AND(
+                [Goal Type] = "Renewal ARR", IF(
+                    [Number of Months] < 12, [Renewal MRR] * [Number of Locations] * [Number of Months],
+                    [Renewal MRR] * [Number of Locations] * 12
+                ) > ([Revenue Total] + 0.01)
+            )
+        )
+    )
+)
+
+var _new_arr_is_zero = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+        AND(
+            AND(
+                NOT([Opportunity Type] = "Renewal"),
+                [Close Date] >= DATE(2020, 1, 1)
+            ),
+            AND(
+                [Goal Type] = "New ARR",
+                OR(
+                    [New MRR] = BLANK(),
+                    [New MRR] = 0
+                )
+            )
+        )
+    )
+)
+
+var _new_arr_too_high = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Dim Account',
+        'Intermediate Opportunity'
+    ),
+    AND(
+        NOT([Stage] IN {"Closed Lost", "05 Nurture"}),
+        AND(
+            AND(
+                NOT([Opportunity Type] = "Renewal"),
+                [Close Date] >= DATE(2020, 1, 1)
+            ),
+            AND(
+                [Goal Type] = "New ARR", IF(
+                    [Number of Months] < 12, [New MRR] * [Number of Locations] * [Number of Months],
+                    [New MRR] * [Number of Locations] * 12
+                ) > ([Revenue Total] + 0.01)
+            )
+        )
+    )
+)
+
+return UNION(
+    SELECTCOLUMNS(_renewal_professional_services_is_zero, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "MRR", [Renewal MRR], "Problem", "Pro Services MRR is Zero", "Revenue Total", [Revenue Total], "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_renewal_arr_is_zero, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "MRR", [Renewal MRR], "Problem", "Renewal MRR is Zero", "Revenue Total", [Revenue Total], "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_new_arr_is_zero, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "MRR", [New MRR], "Problem", "New MRR is Zero", "Revenue Total", [Revenue Total], "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_renewal_mrr_too_high, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "MRR", [Renewal MRR], "Problem", "Renewal MRR is Too High", "Revenue Total", [Revenue Total], "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_new_arr_too_high, "Account", [Account], "Close Date", [Close Date], "Opportunity", [Opportunity], "Opportunity Type", [Opportunity Type], "Owner", 'Intermediate Opportunity'[Owner], "SKU", [SKU], "MRR", [New MRR], "Problem", "New MRR is Too High", "Revenue Total", [Revenue Total], "Stage", [Stage], "Account URL", 'Intermediate Dim Account'[URL])
+)

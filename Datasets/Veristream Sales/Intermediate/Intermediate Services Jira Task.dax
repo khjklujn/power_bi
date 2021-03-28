@@ -1,0 +1,26 @@
+
+var _records = SELECTCOLUMNS(
+    'Staging Services Jira Task',
+    "Assignee", [Assignee],
+    "Created By", [Created By],
+    "Created Time", [Created Time],
+    "Customer", [Customer],
+    "Epic Key", IF(
+        [Epic Key] = BLANK(), "No Epic",
+        [Epic Key]
+    ),
+    "Issue Type", [Issue Type],
+    "Priority", [Priority],
+    "Product", [Product],
+    "Project Key", [Project Key],
+    "Project Name", [Project Name],
+    "Resolution", [Resolution],
+    "Resolution Time", [Resolution Time],
+    "Task Status", [Status],
+    "Status Change Time", [Status Change Time],
+    "Task Key", [Task Key],
+    "Task Name", [Task Name],
+    "Updated Time", [Updated Time]
+)
+
+return _records

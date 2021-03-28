@@ -1,0 +1,50 @@
+
+var _records = NATURALINNERJOIN(
+    NATURALINNERJOIN(
+        'Staging Task',
+        'Staging Task Owner'
+    ),
+    NATURALINNERJOIN(
+        'Staging Account',
+        'Staging Account Owner'
+    )
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Account Id", 'Staging Task'[AccountId],
+    "Account Name", 'Staging Account'[Name],
+    "Account Owner", 'Staging Account Owner'[Name],
+    "Account URL", 'Staging Account'[URL],
+    "Activity Date", [ActivityDate],
+    "Activity Id", 'Staging Task'[Id],
+    "Activity Month", [Activity Month],
+    "Activity Type", [Activity_Type__c],
+    "Activity Subtype", [Activity_Sub_Type__c],
+    "Activity Status", [Status],
+    "Owner", 'Staging Task Owner'[Name],
+    "Subject", [Subject],
+    "Opportunity Id", [WhatId],
+    "30-60-90 Day Window", IF(
+        DATEDIFF([ActivityDate], TODAY(), DAY) <= 30, "30 Days",
+        IF(
+            DATEDIFF([ActivityDate], TODAY(), DAY) <= 60, "60 Days",
+            IF(
+                DATEDIFF([ActivityDate], TODAY(), DAY) <= 90, "90 Days",
+                "Past"
+            )
+        )
+    ),
+    "30 Day Sales Activities", IF(
+        DATEDIFF([ActivityDate], TODAY(), DAY) <= 30, 1,
+        BLANK()
+    ),
+    "60 Day Sales Activities", IF(
+        DATEDIFF([ActivityDate], TODAY(), DAY) <= 60, 1,
+        BLANK()
+    ),
+    "90 Day Sales Activities", IF(
+        DATEDIFF([ActivityDate], TODAY(), DAY) <= 90, 1,
+        BLANK()
+    )
+)

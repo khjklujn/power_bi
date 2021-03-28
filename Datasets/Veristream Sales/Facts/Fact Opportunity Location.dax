@@ -1,0 +1,6 @@
+SELECTCOLUMNS(
+    'Intermediate Opportunity Location',
+    "Location", [Location],
+    "Location Id", [Location Id],
+    "Opportunity Id", [Opportunity Id]
+)

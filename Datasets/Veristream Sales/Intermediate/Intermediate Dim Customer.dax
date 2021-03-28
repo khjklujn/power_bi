@@ -1,0 +1,29 @@
+
+var _potential_duplicates = SELECTCOLUMNS(
+    'Staging Customer',
+    "Customer", [Customer Name],
+    "Count", COUNTX(
+        FILTER(
+            'Staging Customer', 
+            EARLIER('Staging Customer'[Customer Name]) = 'Staging Customer'[Customer Name]
+        ),
+        'Staging Customer'[Customer Name]
+    )
+)
+
+var _duplicates = SELECTCOLUMNS(
+    FILTER(
+        _potential_duplicates,
+        [Count] > 1
+    ),
+    "Customer", [Customer]
+)
+
+return SELECTCOLUMNS(
+    'Staging Customer',
+    "Customer Id", [SaasOptics ID],
+    "Customer", IF(
+        [Customer Name] IN _duplicates, [Unique Name],
+        [Customer Name]
+    )
+)

@@ -1,0 +1,62 @@
+
+var _records = FILTER(
+    NATURALINNERJOIN(
+        'Intermediate Opportunity',
+        'Intermediate Dim Account'
+    ),
+    AND(
+        [Goal Type] IN {"Renewal ARR", "Renewal Professional Services"},
+        [Stage] = "Closed Lost"
+    )
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Account Id", 'Intermediate Dim Account'[Account Id],
+    "Account Name", [Account Name],
+    "Account URL", [Account URL],
+    "Close Date", [Close Date],
+    "Close Month", [Close Month],
+    "Create Date", [Create Date],
+    "Duration", DATEDIFF([Create Date], [Close Date], DAY),
+    "Goal Type", [Goal Type],
+    "Licensing Type", [Licensing Type],
+    "Opportunity", [Opportunity],
+    "Opportunity Id", [Opportunity Id],
+    "Opportunity Type", [Opportunity Type],
+    "Owner", 'Intermediate Opportunity'[Owner],
+    "Revenue Total", IF(
+        [Number of Months] < 12, [Renewal MRR] * [Number of Locations] * [Number of Months],
+        [Renewal MRR] * [Number of Locations] * 12
+    ),
+    "SKU", [SKU],
+    "Start Month", [Start Month],
+
+    "Renewal ARR", IF(
+        AND(
+            [Number of Months] < 12,
+            [Goal Type] = "Renewal ARR"
+        ), [Renewal MRR] * [Number of Months],
+        IF(
+            [Goal Type] = "Renewal ARR", IF(
+            [Number of Months] < 12, [Renewal MRR] * [Number of Locations] * [Number of Months],
+            [Renewal MRR] * [Number of Locations] * 12
+        ),
+            BLANK()
+        )
+    ),
+
+    "Professional Services", IF(
+        AND(
+            [Number of Months] < 12,
+            [Goal Type] = "Renewal Professional Services"
+        ), [Renewal MRR] * [Number of Months],
+        IF(
+            [Goal Type] = "Renewal Professional Services", IF(
+            [Number of Months] < 12, [Renewal MRR] * [Number of Locations] * [Number of Months],
+            [Renewal MRR] * [Number of Locations] * 12
+        ),
+            BLANK()
+        )
+    )
+)

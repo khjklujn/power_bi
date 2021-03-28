@@ -1,0 +1,7 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Staging Goals',
+        "Goal Owner", [Owner],
+        "Sales Region", [Sales Region]
+    )
+)

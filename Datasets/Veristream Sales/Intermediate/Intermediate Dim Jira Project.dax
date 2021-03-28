@@ -1,0 +1,6 @@
+DISTINCT(
+    UNION(
+        SELECTCOLUMNS('Staging Services Jira Epic', "Project Key", [Project Key], "Project Name", [Project Name]),
+        SELECTCOLUMNS('Staging Services Jira Task', "Project Key", [Project Key], "Project Name", [Project Name])
+    )
+)

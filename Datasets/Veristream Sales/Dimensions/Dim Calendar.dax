@@ -1,0 +1,82 @@
+
+var _days = FILTER(
+    CALENDAR(
+        TODAY() - 365 * 3,
+        TODAY() + 365
+    ),
+    DAY([Date]) = 1
+)
+
+return SELECTCOLUMNS(
+    _days,
+    "Year Id", YEAR([Date] - 1),
+    "Month Id", [Date] - 1,
+    "Month Start", DATE(YEAR([Date] - 1), MONTH([Date] - 1), 1),
+    "Month", FORMAT([Date] - 1, "yyyy-mm mmm"),
+    "Quarter", FORMAT([Date] - 1, "yyyy ") & "Q" & FORMAT([Date] - 1, "q"),
+    "Month Type", IF(
+        FORMAT([Date] - 1, "yyyy-mm") < FORMAT(TODAY(), "yyyy-mm"), "Past",
+        IF(
+            FORMAT([Date] - 1, "yyyy-mm") = FORMAT(TODAY(), "yyyy-mm"), "Current",
+            "Future"
+        )
+    ),
+    "Quarter Type", IF(
+        FORMAT([Date] - 1, "yyyy-q") < FORMAT(TODAY(), "yyyy-q"), "Past",
+        IF(
+            FORMAT([Date] - 1, "yyyy-q") = FORMAT(TODAY(), "yyyy-q"), "Current",
+            "Future"
+        )
+    ),
+    "Year Type", IF(
+        YEAR([Date] - 1) < YEAR(TODAY()) - 1, "Past",
+        IF(
+            YEAR([Date] - 1) = YEAR(TODAY()) - 1, "Last Year",
+            IF(
+                YEAR([Date] - 1) = YEAR(TODAY()), "Current",
+                IF(
+                    YEAR([Date] - 1) = YEAR(TODAY()) + 1, "Next Year",
+                    "Future"
+                )
+            )
+        )
+    ),
+    "Month Window", IF(
+        YEAR([Date] - 1) < YEAR(TODAY()), "Past",
+        IF(
+            FORMAT([Date] - 1, "yyyy-mm") < FORMAT(TODAY(), "yyyy-mm"), "Year To Previous Month",
+            IF(
+                FORMAT([Date] - 1, "yyyy-mm") = FORMAT(TODAY(), "yyyy-mm"), "Current",
+                IF(
+                    FORMAT(DATE(YEAR([Date] - 1), MONTH([Date] - 1) - 3, DAY([Date] - 1)), "yyyy-mm") < FORMAT(TODAY(), "yyyy-mm"), "Next Two",
+                    IF(
+                        YEAR([Date] - 1) = YEAR(TODAY()), "To EoY",
+                        "Future"
+                    )
+                )
+            )
+        )
+    ),
+    "YTD Window", IF(
+        YEAR([Date] - 1) < YEAR(TODAY()), "1. Past",
+        IF(
+            AND(
+                YEAR([Date] - 1) = YEAR(TODAY()),
+                FORMAT(DATE(YEAR([Date] - 1), MONTH([Date] - 1) + 3, DAY([Date] - 1)), "yyyy-mm") < FORMAT(TODAY(), "yyyy-mm")
+            ), "2. Year to Previous Two Months",
+            IF(
+                AND(
+                    YEAR([Date] - 1) = YEAR(TODAY()),
+                    FORMAT([Date] - 1, "yyyy-mm") < FORMAT(TODAY(), "yyyy-mm")
+                ), "3. Previous Two Months",
+                IF(
+                    FORMAT([Date] - 1, "yyyy-mm") = FORMAT(TODAY(), "yyyy-mm"), "4. Current",
+                    IF(
+                        YEAR([Date] - 1) = YEAR(TODAY()), "5. To EoY",
+                        "6. Future"
+                    )
+                )
+            )
+        )
+    )
+)

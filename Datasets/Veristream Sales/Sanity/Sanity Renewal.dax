@@ -1,0 +1,27 @@
+
+var _customer_without_renewal = FILTER(
+    NATURALLEFTOUTERJOIN(
+        NATURALINNERJOIN(
+            'Intermediate Dim Customer',
+            'Intermediate Dim Account'
+        ),
+        'Intermediate Account Renewal'
+    ),
+    ISBLANK('Intermediate Account Renewal'[Renewal Month])
+)
+
+var _renewal_date_past_due = FILTER(
+    NATURALINNERJOIN(
+        NATURALINNERJOIN(
+            'Intermediate Dim Customer',
+            'Intermediate Dim Account'
+        ),
+        'Intermediate Account Renewal'
+    ),
+    'Intermediate Account Renewal'[Renewal Month] <= TODAY()
+)
+
+return UNION(
+    SELECTCOLUMNS(_customer_without_renewal, "Customer", 'Intermediate Dim Customer'[Customer], "Account", 'Intermediate Dim Account'[Account], "Renewal Month", 'Intermediate Account Renewal'[Renewal Month], "Problem", "Account Without Renewal Date", "Account URL", 'Intermediate Dim Account'[URL]),
+    SELECTCOLUMNS(_renewal_date_past_due, "Customer", 'Intermediate Dim Customer'[Customer], "Account", 'Intermediate Dim Account'[Account], "Renewal Month", 'Intermediate Account Renewal'[Renewal Month], "Problem", "Renewal Date Past Due", "Account URL", 'Intermediate Dim Account'[URL])
+)

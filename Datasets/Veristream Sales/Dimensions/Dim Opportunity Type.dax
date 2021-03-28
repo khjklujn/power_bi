@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Opportunity Type',
+    "Opportunity Type", [Opportunity Type]
+)

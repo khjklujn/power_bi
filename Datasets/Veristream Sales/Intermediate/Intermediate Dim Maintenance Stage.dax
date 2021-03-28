@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Staging Location',
+        "Maintenance Stage", [Name]
+    )
+)

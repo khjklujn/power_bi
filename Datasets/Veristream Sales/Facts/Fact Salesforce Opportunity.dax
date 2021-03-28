@@ -1,0 +1,60 @@
+
+var _opportunities = NATURALINNERJOIN(
+    NATURALINNERJOIN(
+        'Staging Account',
+        'Staging Account Owner'
+    ),
+    NATURALINNERJOIN(
+        'Staging Opportunity',
+        'Staging Opportunity Owner'
+    )
+)
+
+var _potential_duplicates = SELECTCOLUMNS(
+    'Staging Opportunity',
+    "Opportunity", [Name],
+    "Count", COUNTX(
+        FILTER(
+            'Staging Opportunity', 
+            EARLIER('Staging Opportunity'[Name]) = 'Staging Opportunity'[Name]
+        ),
+        'Staging Opportunity'[Name]
+    )
+)
+
+var _duplicates = SELECTCOLUMNS(
+    FILTER(
+        _potential_duplicates,
+        [Count] > 1
+    ),
+    "Opportunity", [Opportunity]
+)
+
+return SELECTCOLUMNS(
+    _opportunities,
+    "Account Id", 'Staging Opportunity'[AccountId],
+    "Account Name", 'Staging Account'[Name],
+    "Account URL", 'Staging Account'[URL],
+    "Opportunity Id", 'Staging Opportunity'[Id],
+    "Opportunity", IF(
+        'Staging Opportunity'[Name] IN _duplicates, 'Staging Opportunity'[Unique Name],
+        'Staging Opportunity'[Name]
+    ),
+    "Opportunity Type", 'Staging Opportunity'[Type],
+    "Owner", IF(
+        'Staging Opportunity'[Type] = "Renewal", 'Staging Account Owner'[Name],
+        'Staging Opportunity Owner'[Name]
+    ),
+    "Close Date", 'Staging Opportunity'[CloseDate],
+    "Close Month", 'Staging Opportunity'[Close Month],
+    "Total", 'Staging Opportunity'[Amount],
+    "Equipment", 'Staging Opportunity'[Equipment_Sum__c],
+    "Net New ARR", 'Staging Opportunity'[Net_New_ARR_Sum__c],
+    "Renewal ARR", 'Staging Opportunity'[Renewal_ARR_Sum__c],
+    "Start Date", 'Staging Opportunity'[Service_Start_Date__c],
+    "Setup", 'Staging Opportunity'[Setup_Fee_Sum__c],
+    "Supply", 'Staging Opportunity'[Supply_Sum__c],
+    "Professional Services", 'Staging Opportunity'[Professional_Services__c],
+    "Probability", 'Staging Opportunity'[Probability],
+    "Stage", 'Staging Opportunity'[StageName]
+)

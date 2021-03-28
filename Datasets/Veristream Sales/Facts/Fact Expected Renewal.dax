@@ -1,0 +1,7 @@
+SELECTCOLUMNS(
+    'Intermediate Expected Renewal',
+    "Customer Id", [Customer Id],
+    "Owner", [Owner],
+    "Revenue", [Revenue],
+    "Year", [Year]
+)

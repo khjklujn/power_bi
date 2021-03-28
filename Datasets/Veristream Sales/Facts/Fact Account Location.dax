@@ -1,0 +1,7 @@
+SELECTCOLUMNS(
+    'Intermedate Account Location',
+    "Account Name", [Account Name],
+    "Account URL", [Account URL],
+    "Location Id", [Location Id],
+    "Owner", [Owner]
+)

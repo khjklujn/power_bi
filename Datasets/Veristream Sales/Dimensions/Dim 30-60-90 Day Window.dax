@@ -1,0 +1,8 @@
+DISTINCT(
+    FILTER(
+        SELECTCOLUMNS(
+            'Intermediate Task',
+            "30-60-90 Day Window", [30-60-90 Day Window]
+        ),
+        NOT([30-60-90 Day Window] = BLANK())
+))

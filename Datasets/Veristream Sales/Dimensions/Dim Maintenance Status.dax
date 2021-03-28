@@ -1,0 +1,6 @@
+DISTINCT(
+    SELECTCOLUMNS(
+        'Intermediate Dim Maintenance Status',
+        "Maintenance Status", [Maintenance Status]
+    )
+)

@@ -1,0 +1,16 @@
+
+var _records = NATURALINNERJOIN(
+    NATURALINNERJOIN(
+        'Staging Account',
+        'Staging Account Owner'
+    ),
+    'Staging Account Location'
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Account Name", 'Staging Account'[Name],
+    "Account URL", 'Staging Account'[URL],
+    "Location Id", 'Staging Account Location'[Id],
+    "Owner", 'Staging Account Owner'[Name]
+)

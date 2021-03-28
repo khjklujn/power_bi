@@ -1,0 +1,24 @@
+
+var _renewals = NATURALINNERJOIN(
+    'Staging Expected Renewals',
+    NATURALINNERJOIN(
+        'Staging Account',
+        'Staging Account Owner'
+    )
+)
+
+var _relabeled = SELECTCOLUMNS(
+    _renewals,
+    "Year", 'Staging Expected Renewals'[Year],
+    "Customer Id", 'Staging Expected Renewals'[SaasOptics ID],
+    "Owner", 'Staging Account Owner'[Name],
+    "Revenue", 'Staging Expected Renewals'[ARR Total]
+)
+
+return GROUPBY(
+    _relabeled,
+    [Year],
+    [Customer Id],
+    "Owner", MAXX(CURRENTGROUP(), [Owner]),
+    "Revenue", MAXX(CURRENTGROUP(), [Revenue])
+)

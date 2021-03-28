@@ -1,0 +1,7 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Case Priority',
+    "Case Priority", IF(
+        [Case Priority] = BLANK(), "Unknown",
+        [Case Priority]
+    )
+)

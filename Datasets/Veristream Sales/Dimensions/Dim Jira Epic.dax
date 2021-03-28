@@ -1,0 +1,5 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Jira Epic',
+    "Epic Key", [Epic Key],
+    "Epic Name", [Epic Name]
+)

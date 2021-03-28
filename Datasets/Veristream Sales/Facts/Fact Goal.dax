@@ -1,0 +1,8 @@
+SELECTCOLUMNS(
+    'Intermediate Goals',
+    "Close Month", [Close Month],
+    "Goal Type", [Goal Type],
+    "Owner", [Owner],
+    "Sales Region", [Sales Region],
+    "Goal", [Goal]
+)

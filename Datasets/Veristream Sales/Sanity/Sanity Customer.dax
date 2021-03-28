@@ -1,0 +1,33 @@
+
+var _account_without_customer = FILTER(
+    NATURALLEFTOUTERJOIN(
+        NATURALINNERJOIN(
+            'Intermediate Dim Account',
+            'Intermediate Opportunity'
+        ),
+        'Intermediate Dim Customer'
+    ),
+    AND(
+        AND(
+            ISBLANK('Intermediate Dim Customer'[Customer Id]),
+            NOT(ISBLANK('Intermediate Dim Account'[Customer Id]))
+        ),
+        AND(
+            'Intermediate Opportunity'[Stage] = "Closed Won",
+            'Intermediate Opportunity'[Close Date] >= DATE(2020, 1, 1)
+        )
+    )
+)
+
+var _customer_without_account = FILTER(
+    NATURALLEFTOUTERJOIN(
+        'Intermediate Dim Customer',
+        'Intermediate Dim Account'
+    ),
+    ISBLANK('Intermediate Dim Account'[Customer Id])
+)
+
+return UNION(
+    SELECTCOLUMNS(_account_without_customer, "Customer", 'Intermediate Dim Customer'[Customer], "Account", [Account], "Customer SaasOpticsId", 'Intermediate Dim Customer'[Customer Id], "Account SaasOpticsId", 'Intermediate Dim Account'[Customer Id], "Problem", "Account Without Customer"),
+    SELECTCOLUMNS(_customer_without_account, "Customer", 'Intermediate Dim Customer'[Customer], "Account", [Account], "Customer SaasOpticsId", 'Intermediate Dim Customer'[Customer Id], "Account SaasOpticsId", 'Intermediate Dim Account'[Customer Id], "Problem", "Customer Without Account")
+)

@@ -1,0 +1,48 @@
+
+var _records = NATURALINNERJOIN(
+    'Intermediate Opportunity',
+    'Intermediate Dim Account'
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Account Id", 'Intermediate Dim Account'[Account Id],
+    "Confidence of Closing On Time", [Confidence of Closing On Time],
+    "Close Date", [Close Date],
+    "Close Month", [Close Month],
+    "Create Date", [Create Date],
+    "Duration", DATEDIFF([Create Date], [Close Date], DAY),
+    "Goal Type", [Goal Type],
+    "Licensing Type", [Licensing Type],
+    "Opportunity", [Opportunity],
+    "Opportunity Id", [Opportunity Id],
+    "Opportunity Type", [Opportunity Type],
+    "Owner", 'Intermediate Opportunity'[Owner],
+    "Probability", [Probability],
+    "Revenue Total", [Revenue Total],
+    "Sales Type", [Sales Type],
+    "SKU", [SKU],
+    "Stage", [Stage],
+    "Start Month", [Start Month],
+
+    "Channel ARR", IF(
+        [Goal Type] = "Channel ARR", [Revenue Total],
+        BLANK()
+    ),
+    "Hosted Supplies", IF(
+        [Goal Type] = "Hosted Supplies", [Revenue Total],
+        BLANK()
+    ),
+    "New ARR", IF(
+        [Goal Type] = "New ARR", [Revenue Total],
+        BLANK()
+    ),
+    "Products", IF(
+        [Goal Type] = "Products", [Revenue Total],
+        BLANK()
+    ),
+    "Professional Services", IF(
+        [Goal Type] = "Professional Services", [Revenue Total],
+        BLANK()
+    )
+)

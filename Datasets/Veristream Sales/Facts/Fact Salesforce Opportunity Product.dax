@@ -1,0 +1,18 @@
+SELECTCOLUMNS(
+    NATURALINNERJOIN(
+        NATURALINNERJOIN(
+            NATURALINNERJOIN(
+                'Staging Account',
+                'Staging Account Owner'
+            ),
+            NATURALINNERJOIN(
+                'Staging Opportunity',
+                'Staging Opportunity Product'
+            )
+        ),
+        'Staging Product'
+    ),
+    "Opportunity Id", [OpportunityId],
+    "SKU", 'Staging Product'[Name],
+    "Revenue", [TotalPrice]
+)

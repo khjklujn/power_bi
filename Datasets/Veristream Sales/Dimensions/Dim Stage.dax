@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Stage',
+    "Stage", [Stage]
+)

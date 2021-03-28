@@ -1,0 +1,13 @@
+SELECTCOLUMNS(
+    'Intermediate Account Renewal',
+    "Account Id", [Account Id],
+    "Owner", [Owner],
+    "Start Month", [Start Month],
+    "Days To Renewal", [Days To Renewal],
+    "Has Open Cases", [Has Open Cases],
+    "Has Opportunity", [Has Opportunity],
+    "Less Than 45 Days", [Less Than 45 Days],
+    "Lost", [Lost],
+    "Renewal Lead Month", [Renewal Lead Month],
+    "Renewal Month", [Renewal Month]
+)

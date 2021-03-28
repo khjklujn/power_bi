@@ -1,0 +1,53 @@
+
+var _acount_and_user = NATURALINNERJOIN(
+    'Staging Account',
+    'Staging Account Owner'
+)
+
+var _potential_duplicates = SELECTCOLUMNS(
+    'Staging Account',
+    "Account", [Name],
+    "Count", COUNTX(
+        FILTER(
+            'Staging Account', 
+            EARLIER('Staging Account'[Name]) = 'Staging Account'[Name]
+        ),
+        'Staging Account'[Name]
+    )
+)
+
+var _duplicates = SELECTCOLUMNS(
+    FILTER(
+        _potential_duplicates,
+        [Count] > 1
+    ),
+    "Account", [Account]
+)
+
+return SELECTCOLUMNS(
+    _acount_and_user, 
+    "Account Id", 'Staging Account'[Id], 
+    "Account", IF(
+        'Staging Account'[Name] IN _duplicates, 'Staging Account'[Unique Name],
+        'Staging Account'[Name]
+    ),
+    "Owner", 'Staging Account Owner'[Name],
+    "Sales Region Owner", 'Staging Account Owner'[Email],
+    "Customer Type", IF(
+        CONTAINSSTRING('Staging Account'[Industry], "Reseller"), "Channel",
+        IF(
+            CONTAINSSTRING('Staging Account'[Industry], "Hospital"), "Hospital",
+            IF(
+                CONTAINSSTRING('Staging Account'[Industry], "Healthcare"), "Hospital",
+                "Enterprise"
+            )
+        )
+    ),
+    "Licensing Type", IF(
+        CONTAINSSTRING('Staging Account'[Industry], "Reseller"), "Channel",
+        "Direct"
+    ),
+    "Customer Id", 'Staging Account'[SaasOptics ID],
+    "URL", [URL],
+    "URL Name", [URL Name]
+)

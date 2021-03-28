@@ -1,0 +1,93 @@
+
+var _records = NATURALINNERJOIN(
+    'Staging Account',
+    NATURALINNERJOIN(
+        'Staging Case',
+        'Staging Case Owner'
+    )
+)
+
+return SELECTCOLUMNS(
+    _records,
+    "Account Id", 'Staging Case'[AccountId],
+    "Account Name", 'Staging Account'[Name],
+    "Account URL", 'Staging Account'[URL],
+    "Case Id", 'Staging Case'[Id],
+    "Open Date", 'Staging Case'[CreatedDate],
+    "Open Month", [Open Month],
+    "Owner", 'Staging Case Owner'[Name],
+    "Product", 'Staging Case'[Product__c],
+    "Subject", [Subject__c],
+    "Priority", [Priority],
+    "Case Status", IF(
+        [ClosedDate] = BLANK(), "Open",
+        "Closed"
+    ),
+    "Case Category", IF(
+        [Category__c] = BLANK(), "Unknown",
+        [Category__c]
+    ),
+    "Case Sub Category", IF(
+        [Sub_Category__c] = BLANK(), "Unknown",
+        [Sub_Category__c]
+    ),
+    "Cases", 1,
+    "30-60-90 Day Window", IF(
+        OR(
+            'Staging Case'[ClosedDate] = BLANK(),
+            DATEDIFF('Staging Case'[ClosedDate], TODAY(), DAY) <= 30
+        ), "30 Days",
+        IF(
+            DATEDIFF('Staging Case'[ClosedDate], TODAY(), DAY) <= 60, "60 Days",
+            IF(
+                DATEDIFF('Staging Case'[ClosedDate], TODAY(), DAY) <= 90, "90 Days",
+                "Past"
+            )
+        )
+    ),
+    "Age Category", IF(
+        'Staging Case'[ClosedDate] = BLANK(), IF(
+            DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) <= 1, "01 Day",
+            IF(
+                DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) <= 2, "02 Days",
+                IF(
+                    DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) <= 4, "04 Days",
+                    IF(
+                        DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) <= 8, "08 Days",
+                        IF(
+                            DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) <= 16, "16 Days",
+                            "16+ Days"
+                        )
+                    )
+                )
+            )
+        ), 
+        IF(
+            DATEDIFF('Staging Case'[CreatedDate], 'Staging Case'[ClosedDate], DAY) <= 1, "01 Day",
+            IF(
+                DATEDIFF('Staging Case'[CreatedDate], 'Staging Case'[ClosedDate], DAY) <= 2, "02 Days",
+                IF(
+                    DATEDIFF('Staging Case'[CreatedDate], 'Staging Case'[ClosedDate], DAY) <= 4, "04 Days",
+                    IF(
+                        DATEDIFF('Staging Case'[CreatedDate], 'Staging Case'[ClosedDate], DAY) <= 8, "08 Days",
+                        IF(
+                            DATEDIFF('Staging Case'[CreatedDate], 'Staging Case'[ClosedDate], DAY) <= 16, "16 Days",
+                            "16+ Days"
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    "Days Open", IF(
+        [ClosedDate] = BLANK(), 
+        IF(
+            DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY) = 0, 1,
+            DATEDIFF('Staging Case'[CreatedDate], TODAY(), DAY)
+        ),
+        IF(
+            DATEDIFF('Staging Case'[CreatedDate], [ClosedDate], DAY) = 0, 1,
+            DATEDIFF('Staging Case'[CreatedDate], [ClosedDate], DAY)
+        )
+    )
+)

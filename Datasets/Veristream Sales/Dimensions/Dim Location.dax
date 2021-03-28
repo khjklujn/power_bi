@@ -1,0 +1,8 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Location',
+    "Address", [Address],
+    "Location", [Location],
+    "Location Id", [Location Id],
+    "Maintenance Stage", [Maintenance Stage],
+    "Product", [Product]
+)

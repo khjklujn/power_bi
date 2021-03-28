@@ -1,0 +1,4 @@
+SELECTCOLUMNS(
+    'Intermediate Dim Goal Type',
+    "Goal Type", [Goal Type]
+)
